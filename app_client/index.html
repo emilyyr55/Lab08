@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html ng-app="bloggerApp">
+  <head>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/angular-route.min.js"></script>
+    <script src="/js/angular-ui-router.min.js"></script>
+
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/fontawesome-all.css" />
+  </head>
+  <body style="background-color: #d3eed2">
+    <!-- Navigation Directive -->
+    <div ng-controller="NavigationController">
+      <navigation></navigation>
+    </div>
+
+    <!-- Angular Templates -->
+    <script type="text/ng-template" id="pages/game.html">
+        <body ng-controller="GameController">
+        <main class="background">
+            <section class="title">
+              <p></p>
+                <h1>Tic Tac Toe</h1>
+            </section>
+            <section class="display" ng-show="vm.gameId != undefined && !vm.gameOver">
+                Player <span class="display-player playerX">{{vm.turn}}</span>'s turn
+            </section>
+            <section class="display" ng-show="vm.gameOver && vm.winner != null">
+              Player <span class="display-player playerX">{{vm.winner}}</span> won!
+          </section>
+          <section class="display" ng-show="vm.gameOver && vm.winner == null">
+             Tied game.
+        </section>
+            <section class="container">
+              <p></p>
+              <div class="game-board">
+                  <div ng-repeat="spot in vm.board track by $index">
+                      <button ng-click="vm.makeMove($index)" ng-disabled="vm.isDisabled(spot)" class="game-tile" >{{vm.convertSpot(spot)}}</button>
+                  </div>
+                </div>
+            </section>
+
+            <section class="display announcer hide"></section>
+            <section class="controls">
+              <p></p>
+              <button ng-click="vm.createGame()" ng-show="vm.gameId == undefined" id="ready">Ready</button>
+              <button ng-click="vm.createGame()" ng-show="vm.gameId != undefined && vm.gameOver" id="reset">Reset</button>
+          </section>
+        </main>
+      </body>
+    </script>
+
+    <script type="text/ng-template" id="pages/home.html">
+      <p></p>
+      <h1>{{vm.pageHeader.title}} </h1>
+      <p>{{vm.message}}</p>
+    </script>
+
+    <script type="text/ng-template" id="pages/blog-list.html">
+      <body ng-controller="ListController">
+      <div ng-repeat="blog in vm.blogs">
+        <p></p>
+        <div class="card border-secondary" style="width: 50%">
+          <div class="card-header">
+          <div class="row">
+              <div class="col-sm"> </div>
+              <div class="col-sm"></div>
+          </div>
+          </div>
+          <div class="card-body">
+              <h5 class ="card-title">{{blog.blogTitle}}</h5>
+              <p class="card-text">{{blog.blogText}}</p>
+              <i>Published by {{blog.ownerName}} on {{blog.formattedDate}} </i>
+
+          </div>
+          <div class="card-footer">
+              <div class = "row">
+                  <div class = "col-sm"></div>
+                  <div class = "col-sm">
+                      <ul class="nav justify-content-end nav-pills card-header-pills">
+                          <li class="nav-item">
+                              <a ng-show="vm.isBlogOwner(blog.ownerEmail)" a class="nav-item nav-link" href="/#!/blog-edit/{{blog._id}}">
+                                  <button type="submit" class="btn btn-link">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="secondary" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                  </svg>
+                                  </button>
+                              </a>
+                          </li>
+                          <li class="nav-item">
+                              <a ng-show="vm.isBlogOwner(blog.ownerEmail)" a class="nav-item nav-link" href="/#!/blog-delete/{{blog._id}}">
+                                  <button type="submit" class="btn btn-link">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="secondary" class="bi bi-trash3" viewBox="0 0 16 16">
+                                          <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                      </svg>
+                                  </button>
+                              </a>
+                          </li>
+                      </ul>
+                  </div>
+                  </div>
+              </div>
+          </div>
+          <p></p>
+      </div>
+      </body>
+    </script>
+
+    <script type="text/ng-template" id="pages/blog-edit.html">
+      <p></p>
+      <div class="card border-secondary" style="width: 50%">
+      <form name="userForm" ng-submit="vm.submit()" ng-controller="EditController" style="padding: 20px">
+          <div class="form-group">
+              <label for="summary" class="text-primary" style="color:seagreen! important" >Blog Title</label>
+              <input class="form-control" id="blogTitle" name="blogTitle" value="{{vm.blog.blogTitle}}">
+              <label for="detail" class="text-primary" style="color:seagreen! important">Blog Text</label>
+              <textarea class="form-control" id="blogText" name="blogText" rows="3">{{vm.blog.blogText}}</textarea>
+          </div>
+          <input type="submit" class="btn btn-primary" value="Save Blog" style="background-color:seagreen; border-color:seagreen">
+      </form>
+      </div>
+    </script>
+
+    <script type="text/ng-template" id="pages/blog-add.html">
+      <p></p>
+      <div class="card border-secondary" style="width: 50%">
+      <form name="userForm" ng-submit="vm.submit()" ng-controller="AddController" style="padding: 20px">
+
+
+              <div class="form-group">
+                  <label for="blogTitle" class="text-secondary" style="color:seagreen! important">Blog Title</label>
+                  <input class="form-control" id="blogTitle" name="blogTitle"></textarea>
+
+                  <label for="blogText" class="text-secondary" style="color:seagreen! important">Blog Text</label>
+                  <textarea class="form-control" id="blogText" rows="3" name="blogText"></textarea>
+
+              </div>
+                  <input type="submit" class="btn btn-primary" value="Add Blog" style="background-color:seagreen; border-color:seagreen">
+
+          </div>
+      </form>
+      </div>
+    </script>
+
+    <script type="text/ng-template" id="pages/blog-delete.html">
+          <p></p>
+          <h4>Are you sure you want to delete this blog?</h4>
+          <p>
+
+            <div class="card border-secondary" style="width: 50%" style=" border-color:seagreen! important">
+              <div class="card-header">
+              <div class="row">
+                  <div class="col-sm">
+                  </div>
+                  <div class="col-sm">
+
+                  </div>
+                  </div>
+              </div>
+              <div class="card-body">
+                  <h5 class ="card-title">{{vm.blog.blogTitle}}</h5>
+                  <p class="card-text">{{vm.blog.blogText}}</p>
+              </div>
+              <div class="card-footer">
+                  <div class = "row">
+                      <div class = "col-sm">
+
+                      </div>
+                      <div class = "col-sm">
+                          <ul class="nav justify-content-end nav-pills card-header-pills">
+
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
+           <!-- card -->
+           <!-- card -->
+           <form name="userForm" ng-submit="vm.submit()" ng-controller="DeleteController" style="padding: 20px">
+
+                  <input type="submit" class="btn btn-primary" value="Delete Blog" style="background-color:seagreen; border-color:seagreen">
+              <a class="btn btn-primary " href="/#!/blog-list" role="button" style="background-color:seagreen; border-color:seagreen">Cancel</a>
+
+        </form>
+      </div>
+    </script>
+
+    <!-- Angular View (dynamic content goes here) -->
+    <ui-view> </ui-view>
+
+    <script src="/js/bloggerApp.js"></script>
+    <script src="/common/auth/authentication.js"></script>
+    <script src="/common/nav/navigation.js"></script>
+  </body>
+</html>

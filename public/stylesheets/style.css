@@ -1,0 +1,25 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  width: 306px;
+  margin: 10px auto;
+}
+
+.game-tile{
+  font-family: "Permanent Marker", cursive;
+  width: 100px;
+  height: 100px;
+  border: 2px solid;
+  cursor: pointer;
+  line-height: 100px;
+  font-size: 60px;
+}

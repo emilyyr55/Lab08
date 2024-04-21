@@ -1,0 +1,18 @@
+
+<style>
+    .navbar-custom {
+            background-color: seagreen;
+        }
+</style>
+<nav class="navbar fixed-top navbar-expand-sm navbar-dark navbar-custom">
+    <a class="navbar-brand" href="/">My Blog</a>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+     <div class="navbar-nav">
+     <a class="nav-item nav-link active" href="/#!/blog-list">List Blogs</a>
+     <a ng-show="navvm.isLoggedIn()" class="nav-item nav-link active" href="/#!/blog-add">Add Blog</a>
+     <a ng-show="navvm.isLoggedIn()" class="nav-item nav-link active" href="/#!/game">Tic-Tac-Toe</a>
+     <a ng-show="!navvm.isLoggedIn()" class="nav-item nav-link active" href="/#!/login">Sign In</a>
+     <a ng-show="navvm.isLoggedIn()" class="nav-item nav-link active" href="" ng-click="navvm.logout()">Logout <small>({{ navvm.currentUser().email }}) </small></a>
+     </div>
+    </div>
+</nav>
